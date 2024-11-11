@@ -1,0 +1,140 @@
+openapi: 3.0.0 
+info:
+  title: Flooring Store API
+  version: 1.0.0
+  description: API для управления информацией о товарах и заказах в магазине напольных покрытий
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Development server
+paths:
+  /floors:
+    get:
+      summary: Метод для получения списка напольных покрытий
+      tags:
+        - Floors
+      operationId: getAllFloors
+      responses:
+        '200':
+          description: Успешный ответ со списком напольных покрытий
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Floors"
+        'default':
+          description: Все остальные ответы
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Метод для создания экземпляра напольного покрытия
+      tags:
+        - Floors
+      operationId: createFloor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Floor"
+      responses:
+        '200':
+          description: Успешный ответ с созданным экземпляром напольного покрытия
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Floor"
+        'default':
+          description: Все остальные ответы
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /floors/{floor_id}:
+    get:
+      summary: Метод для получения напольного покрытия
+      tags:
+        - Floors
+      operationId: getFloorById
+      parameters:
+        - name: floor_id
+          in: path
+          required: true
+          description: Идентификатор напольного покрытия
+          schema:
+            type: string
+          example: "617cfebf-c483-43b3-9f70-87f8afad5ea6"
+      responses:
+        '200':
+          description: Успешный ответ с экземпляром напольного покрытия
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Floor"
+        'default':
+          description: Все остальные ответы
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: Метод для удаления экземпляра напольного покрытия по идентификатору
+      tags:
+       - Floors
+      operationId: deleteFloorById
+      parameters:
+        - name: floor_id
+          in: path
+          required: true
+          description: Идентификатор напольного покрытия
+          schema:
+            type: string
+          example: "617cfebf-c483-43b3-9f70-87f8afad5ea6"
+      responses:
+        '200':
+          description: Успешное удаление экземпляра напольного покрытия
+          content:
+            application/json: {}
+        'default':
+          description: Все остальные ответы
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  
+
+components:
+  schemas:
+    Floor:
+      type: object
+      required:
+        - name
+      properties:
+        floor_id:
+          type: string
+          example: "617cfebf-c483-43b3-9f70-87f8afad5ea6"
+        name:
+          type: string
+          example: "паркетная доска Coswick"
+        floor_type:
+          type: string
+          enum:
+            - engineered wood flooring
+            - laminate flooring
+          description: Тип напольного покрытия
+    Floors:
+      type: array
+      items:
+        $ref: "#/components/schemas/Floor"
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          description: Код ошибки
+        message:
+          type: string
+          description: Сообщение об ошибке
