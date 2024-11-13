@@ -4,20 +4,20 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>example-project</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>flooring-store</artifactId>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <properties>
-        <kotlin.version>2.0.0</kotlin.version>
+        <kotlin.version>1.9.10</kotlin.version>
         <spring.boot.version>3.3.5</spring.boot.version>
-        <springdoc.openapi.version>1.7.0</springdoc.openapi.version>
-        <jvm.target>17</jvm.target>
+        <java.version>17</java.version>
+        <openapi.generator.version>7.9.0</openapi.generator.version>
     </properties>
 
     <repositories>
         <repository>
-            <id>maven-central</id>
+            <id>central</id>
             <url>https://repo.maven.apache.org/maven2</url>
         </repository>
     </repositories>
@@ -30,11 +30,26 @@
             <version>${spring.boot.version}</version>
         </dependency>
 
-        <!-- SpringDoc OpenAPI UI -->
+        <!-- OpenAPI UI for Springdoc -->
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>${springdoc.openapi.version}</version>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.6.0</version>
+        </dependency>
+
+        <!-- Servlet API -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Validation API -->
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>2.0.1.Final</version>
         </dependency>
 
         <!-- Kotlin Dependencies -->
@@ -52,7 +67,7 @@
 
     <build>
         <plugins>
-            <!-- Spring Boot Maven Plugin -->
+            <!-- Spring Boot Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -67,22 +82,20 @@
                 <executions>
                     <execution>
                         <id>compile</id>
-                        <phase>compile</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>
                         <configuration>
-                            <jvmTarget>${jvm.target}</jvmTarget>
+                            <jvmTarget>${java.version}</jvmTarget>
                         </configuration>
                     </execution>
                     <execution>
                         <id>test-compile</id>
-                        <phase>test-compile</phase>
                         <goals>
                             <goal>test-compile</goal>
                         </goals>
                         <configuration>
-                            <jvmTarget>${jvm.target}</jvmTarget>
+                            <jvmTarget>${java.version}</jvmTarget>
                         </configuration>
                     </execution>
                 </executions>
@@ -92,19 +105,19 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>7.9.0</version>
+                <version>${openapi.generator.version}</version>
                 <executions>
                     <execution>
+                        <id>generate-sources</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <generatorName>kotlin-spring</generatorName>
                             <inputSpec>${project.basedir}/src/main/resources/static/flooring-store.yml</inputSpec>
-                            <output>${project.build.directory}/generated</output>
-                            <apiPackage>org.openapi.example.api</apiPackage>
-                            <invokerPackage>org.openapi.example.invoker</invokerPackage>
-                            <modelPackage>org.openapi.example.model</modelPackage>
+                            <generatorName>kotlin-spring</generatorName>
+                            <apiPackage>ru.flooringstore.openapi.api</apiPackage>
+                            <invokerPackage>ru.flooringstore.openapi.invoker</invokerPackage>
+                            <modelPackage>ru.flooringstore.openapi.model</modelPackage>
                             <configOptions>
                                 <dateLibrary>java8</dateLibrary>
                                 <interfaceOnly>true</interfaceOnly>
@@ -114,5 +127,15 @@
                 </executions>
             </plugin>
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.yaml</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
 </project>
